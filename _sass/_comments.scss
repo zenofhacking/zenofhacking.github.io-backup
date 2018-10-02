@@ -1,0 +1,41 @@
+
+#comments {
+    text-align: center;
+}
+
+
+//  disable button darker color when visited
+.btn-link {
+    &:visited {
+        color: $brand-color;
+    }
+}
+
+// github comment cells
+
+#comments > gh-* {
+    display: none;
+}
+
+.gh-comment {
+    text-align: left;
+    border: 1px solid #e8e8e8;
+    margin: 2em 0;
+    padding: 10px;
+}
+
+.gh-comment img {
+    display: inline;
+    vertical-align: middle;
+    margin: 2px 10px 2px 2px;
+}
+
+.gh-comment-hr {
+    border-top: 1px solid #e8e8e8;
+    color: solid #e8e8e8;
+    margin: 8px 0px;
+}
+
+#post-comment {
+    text-align: right;
+}

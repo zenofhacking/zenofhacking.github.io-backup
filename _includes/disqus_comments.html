@@ -1,0 +1,160 @@
+{%- if page.comments != false and jekyll.environment == "production" -%}
+
+  <div id="comments">
+    <br />
+    <h3>COMMENTS</h3>
+
+    <div id="gh-top"></div>
+    <div id="gh-status"></div>
+    <a href="#" id="gh-more" class="btn-link"></a>
+    <div id="gh-down"></div>
+
+  </div>
+
+  <div id="post-comment">
+    <br />
+    <h3><a class="btn-link" target="_blank" rel="noopener noreferrer" href="https://github.com/dwilliamson/donw.io/issues/{{ page.comments }}#new_comment_field">Leave a comment</a></h3>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <script>
+
+    const pageSize = 50;
+
+    // view changes
+    function hideStatus() {
+      $("#gh-status").hide();
+    }
+
+    function showStatus(msg) {
+      $("#gh-status").html(msg);
+      $("#gh-status").show();
+    }
+
+    function showMorePages(num) {
+      $("#gh-more").html((num * pageSize) + " hidden comments, load more");
+      $("#gh-more").click(moreOnClick);
+      $("#gh-more").show();
+    }
+
+    function hideMorePages() {
+      $("#gh-more").off("click");
+      $("#gh-more").hide();
+    }
+
+
+    function commentTemplating(comments) {
+      var html = '';
+      $.each(comments, function(i, comment) {
+        var date = new Date(comment.created_at);
+        var t = "<div class='gh-comment'>";
+        t += "<img src='" + comment.user.avatar_url + "' width='24px'>";
+        t += "<b><a href='" + comment.user.html_url + "'>" + comment.user.login + "</a></b>";
+        t += " posted at ";
+        t += "<em>" + date.toUTCString() + "</em>";
+        t += "<div class='gh-comment-hr'></div>";
+        t += comment.body_html;
+        t += "</div>";
+        html += t;
+      });
+      return html;
+    }
+
+
+    function requstComments(page) {
+      return $.ajax('https://api.github.com/repos/{{ site.github_issues.owner }}/{{ site.github_issues.repo }}/issues/{{ page.comments }}/comments', {
+        headers: {Accept: "application/vnd.github.v3.html+json"},
+        dataType: "json",
+        data: {"page": page, "per_page": pageSize},
+        beforeSend: function() {
+          showStatus("Loading ...");
+        }
+      });
+    }
+
+
+    function errHandler(jqXHR, status, err) {
+      showStatus("Error loading comments");
+    }
+
+
+    // type: 'next', 'prev', 'last'
+    function parseApiResult(link, type) {
+      var result;
+      if (link) {
+        link.split(",").forEach(function(item) {
+          if (item.indexOf('rel="' + type + '"') !== -1)
+            result = /page=([0-9]+)/.exec(item)[1];
+            return;
+        });
+      }
+      return parseInt(result);
+    }
+
+
+    function appendWithFadin(sel, html) {
+      var items = $($.parseHTML(html));
+      items.hide().appendTo(sel).fadeIn(800);
+    }
+
+
+    var moreOnClick = function(e) {
+      e.preventDefault();
+
+      hideMorePages();
+
+      var page = $("#comments").data("next");
+      console.log("loading page " + page);
+
+      requstComments(page)
+      .then(function(comments, status, jqXHR) {
+        appendWithFadin('#gh-top', commentTemplating(comments));
+        var next = parseApiResult(jqXHR.getResponseHeader("link"), "next");
+        var last = $("#comments").data("last");
+        hideStatus();
+        if (last > next) {
+          $("#comments").data("next", next);
+          showMorePages(last - next);
+        }
+      }, errHandler);
+    };
+
+
+    function loadGithubComments() {
+      requstComments(1)
+      .then(function(comments, status, jqXHR) {
+        appendWithFadin('#gh-top', commentTemplating(comments));
+        $("#gh-top").show();
+        var last = parseApiResult(jqXHR.getResponseHeader("link"), "last");
+        var next = parseApiResult(jqXHR.getResponseHeader("link"), "next");
+        console.log('last ' + last);
+        $("#comments").data("last", last);
+        $("#comments").data("next", next);
+        hideStatus();
+        if (last > 1) {
+          return requstComments(last);
+        }
+      }, errHandler)
+      .then(function(comments, status, jqXHR) {
+        if (comments) {
+          appendWithFadin("#gh-down", commentTemplating(comments));
+          $("#gh-down").show();
+          var next = $("#comments").data("next");
+          var last = $("#comments").data("last");
+          hideStatus();
+          if (last > next) {
+            showMorePages(last - next);
+          }
+        }
+      }, errHandler);
+    }
+
+
+    $(document).ready(function () {
+      loadGithubComments();
+    });
+
+  </script>
+
+{%- endif -%}
