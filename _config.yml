@@ -32,6 +32,9 @@ plugins:
 
 show_excerpts: true
 
+# Google analytics
+google_analytics: UA-126875721-1
+
 disqus:
   shortname: true
 
