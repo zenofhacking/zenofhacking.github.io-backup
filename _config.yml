@@ -25,7 +25,7 @@ github_username:  zenofhacking
 rss: rss
 
 # Build settings
-markdown: CommonMarkGhPages
+markdown: kramdown
 theme: minima
 plugins:
   - jekyll-feed
