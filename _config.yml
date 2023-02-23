@@ -25,17 +25,13 @@ github_username:  zenofhacking
 rss: rss
 
 # Build settings
-markdown: kramdown
+markdown: GFM
 theme: minima
 plugins:
   - jekyll-feed
   - jekyll-commonmark-ghpages
 
 show_excerpts: true
-
-kramdown:
-  math_engine: mathjax
-  syntax_highlighter: rouge
 
 # Google analytics
 google_analytics: UA-126875721-1
