@@ -1,7 +1,8 @@
 ---
-title: Deriving the OLS Estimator
-date: '2020-12-21'
-tags: ['next js', 'math', 'ols']
+layout: post
+title: "Deriving the OLS Estimator"
+date: 2020-12-21 04:50:00 +0000
+categories: post
 draft: false
 summary: 'How to derive the OLS Estimator with matrix notation and a tour of math typesetting using markdown with the help of KaTeX.'
 ---
