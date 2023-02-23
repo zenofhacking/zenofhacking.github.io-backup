@@ -29,10 +29,10 @@ markdown: kramdown
 theme: minima
 plugins:
   - jekyll-feed
-  - jekyll-commonmark-ghpages
 
 kramdown:
   math_engine: mathjax
+  syntax_highlighter: rouge
 
 show_excerpts: true
 
