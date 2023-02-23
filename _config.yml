@@ -25,10 +25,11 @@ github_username:  zenofhacking
 rss: rss
 
 # Build settings
-markdown: kramdown
+markdown: CommonMarkGhPages
 theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-commonmark-ghpages
 
 show_excerpts: true
 
